@@ -23,6 +23,16 @@ public class HttpBadRequestExecption extends RuntimeException {
     /**
      * Constructor.
      *
+     * @param recursoNombre Nombre del recurso.
+     * @param recursoValor Valor del recurso.
+     */
+    public HttpBadRequestExecption(String recursoNombre, String recursoValor) {
+        super("Sin información, " + recursoNombre + " con valor:" + recursoValor + ", no se ha encontrado.");
+    }
+
+    /**
+     * Constructor.
+     *
      * @param message Mensaje de la excepcion.
      */
     public HttpBadRequestExecption(String message) {

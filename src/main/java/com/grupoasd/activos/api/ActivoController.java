@@ -38,6 +38,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -398,19 +399,23 @@ public class ActivoController {
                         message = "Error interno del servidor")
             }
     )
-    @PostMapping(value = "/{id}/fechabaja/{fechabaja}",
+    @PostMapping(value = "/{id}/fecha-baja",
             produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Activo> editFechaBajaActivo(
             @PathVariable @ApiParam(name = "id", value = "Id del Activo.", example = "1") Integer id,
-            @PathVariable @ApiParam(name = "fechabaja", value = "Fecha de baja.")
-            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date fechaBaja) {
+            @RequestParam("fecha-baja")
+            @DateTimeFormat(pattern = "yyyy-MM-dd") Date fechaBaja) {
 
         Optional<Activo> activoId = servActivo.buscarActivoById(id);
         if (activoId.isPresent()) {
-            Optional<Activo> resultado = Optional.of(servActivo.editarFechaBajaAcivoById(id, fechaBaja).get());
-            return new ResponseEntity<>(resultado.get(), HttpStatus.OK);
+            if (fechaBaja.compareTo(activoId.get().getFechaCompra()) > 0) {
+                Optional<Activo> resultado = Optional.of(servActivo.editarFechaBajaAcivoById(id, fechaBaja).get());
+                return new ResponseEntity<>(resultado.get(), HttpStatus.OK);
+            } else {
+                throw new HttpBadRequestExecption("La fecha de baja no puede ser inferior a la fecha de compra.");
+            }
         } else {
-            throw new HttpNoContentExecption("ACTIVO", id.toString());
+            throw new HttpBadRequestExecption("ACTIVO", id.toString());
         }
     }
 
