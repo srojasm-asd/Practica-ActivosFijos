@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.ApiKey;
 import springfox.documentation.service.AuthorizationScope;
@@ -94,7 +95,11 @@ public class SwaggerConfig {
         DEFAULT_API_INFO = new ApiInfo(infoApiTitle, infoApiDescription, infoApiVersion, infoApiTermOfServiceUrl,
                 DEFAULT_CONTACT, infoApiLicense, infoApiLicenseUrl, new ArrayList<>());
 
-        return new Docket(DocumentationType.SWAGGER_2).apiInfo(DEFAULT_API_INFO)
+        return new Docket(DocumentationType.SWAGGER_2)
+                .apiInfo(DEFAULT_API_INFO)
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.grupoasd.activos.api"))
+                .build()
                 .securityContexts(Arrays.asList(securityContext()))
                 .securitySchemes(Arrays.asList(apiKey()));
     }

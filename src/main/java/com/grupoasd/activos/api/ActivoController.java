@@ -14,6 +14,8 @@
 package com.grupoasd.activos.api;
 
 import com.grupoasd.activos.entity.Activo;
+import com.grupoasd.activos.exception.HttpBadRequestExecption;
+import com.grupoasd.activos.exception.HttpNoContentExecption;
 import com.grupoasd.activos.service.ServicioActivo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -118,7 +120,7 @@ public class ActivoController {
         if (respuesta.isPresent()) {
             return new ResponseEntity<>(respuesta.get(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            throw new HttpNoContentExecption("ACTIVO", id.toString());
         }
     }
 
@@ -152,7 +154,11 @@ public class ActivoController {
     public ResponseEntity<List<Activo>> getActivosByTipo(
             @PathVariable @ApiParam(name = "id", value = "Id del tipo.", example = "1") Integer id) {
         List<Activo> resultado = servActivo.buscarActivosByTipo(id);
-        return new ResponseEntity<>(resultado, HttpStatus.OK);
+        if (!resultado.isEmpty()) {
+            return new ResponseEntity<>(resultado, HttpStatus.OK);
+        } else {
+            throw new HttpNoContentExecption("ACTIVOS");
+        }
     }
 
     /**
@@ -185,7 +191,11 @@ public class ActivoController {
     public ResponseEntity<Activo> getActivosBySerial(
             @PathVariable @ApiParam(name = "serial", value = "Serial.", example = "1") String serial) {
         Optional<Activo> resultado = servActivo.buscarActivosBySerial(serial);
-        return new ResponseEntity<>(resultado.get(), HttpStatus.OK);
+        if (resultado.isPresent()) {
+            return new ResponseEntity<>(resultado.get(), HttpStatus.OK);
+        } else {
+            throw new HttpNoContentExecption("ACTIVOS");
+        }
     }
 
     /**
@@ -220,7 +230,11 @@ public class ActivoController {
             @ApiParam(name = "compra", value = "Fecha de Compra.", example = "2023-01-26")
             @DateTimeFormat(pattern = "yyyy-MM-dd") Date compra) {
         List<Activo> resultado = servActivo.buscarActivosByFechaCompra(compra);
-        return new ResponseEntity<>(resultado, HttpStatus.OK);
+        if (!resultado.isEmpty()) {
+            return new ResponseEntity<>(resultado, HttpStatus.OK);
+        } else {
+            throw new HttpNoContentExecption("ACTIVOS");
+        }
     }
 
     /**
@@ -237,9 +251,6 @@ public class ActivoController {
                         message = "Activo creado correctamente.",
                         response = Activo.class),
                 @ApiResponse(
-                        code = 204,
-                        message = "Sin información - Activo ya existe."),
-                @ApiResponse(
                         code = 400,
                         message = "Bad Request",
                         reference = "La solicitud realizada no cumple con las validaciones de datos implementada"),
@@ -252,7 +263,8 @@ public class ActivoController {
     public ResponseEntity<Activo> createActivo(@RequestBody @Valid Activo activo) {
         Optional<Activo> activoEnBase = servActivo.buscarActivosBySerial(activo.getSerial());
         if (activoEnBase.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            throw new HttpBadRequestExecption("Ya existe un serial:"
+                    + activo.getSerial() + ", para el activo a crear.");
         } else {
             Optional<Activo> respuesta = servActivo.crear(activo);
             if (respuesta.isPresent()) {
@@ -276,9 +288,6 @@ public class ActivoController {
                         code = 200,
                         message = "Respuesta exitosa",
                         response = Activo.class),
-                @ApiResponse(
-                        code = 204,
-                        message = "Sin información - Activo con serial ya existe."),
                 @ApiResponse(
                         code = 404,
                         message = "Sin información - Activo no encontrado."),
@@ -306,10 +315,11 @@ public class ActivoController {
                 Optional<Activo> respuesta = servActivo.editar(activo);
                 return new ResponseEntity<>(respuesta.get(), HttpStatus.OK);
             } else {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                throw new HttpBadRequestExecption("Ya existe un serial:"
+                        + activo.getSerial() + ", para el activo a crear.");
             }
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new HttpNoContentExecption("ACTIVO", activo.getId().toString());
         }
     }
 
@@ -328,9 +338,6 @@ public class ActivoController {
                         code = 200,
                         message = "Respuesta exitosa",
                         response = Activo.class),
-                @ApiResponse(
-                        code = 204,
-                        message = "Sin información - Activo con serial ya existe."),
                 @ApiResponse(
                         code = 404,
                         message = "Sin información - Activo no encontrado."),
@@ -357,10 +364,10 @@ public class ActivoController {
                 Optional<Activo> resultado = Optional.of(servActivo.editarSerialAcivoById(id, serial).get());
                 return new ResponseEntity<>(resultado.get(), HttpStatus.OK);
             } else {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                throw new HttpBadRequestExecption("Ya existe un serial:" + serial + ", para el activo a crear.");
             }
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new HttpNoContentExecption("ACTIVO", id.toString());
         }
     }
 
@@ -403,7 +410,7 @@ public class ActivoController {
             Optional<Activo> resultado = Optional.of(servActivo.editarFechaBajaAcivoById(id, fechaBaja).get());
             return new ResponseEntity<>(resultado.get(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new HttpNoContentExecption("ACTIVO", id.toString());
         }
     }
 
@@ -433,15 +440,15 @@ public class ActivoController {
             }
     )
     @DeleteMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Boolean> deleteActivo(
+    public ResponseEntity<String> deleteActivo(
             @PathVariable @ApiParam(name = "id", value = "Id del Activo.", example = "1") Integer id) {
 
         Optional<Activo> activoId = servActivo.buscarActivoById(id);
         if (activoId.isPresent()) {
-            Boolean resultado = servActivo.eliminar(id);
-            return new ResponseEntity<>(resultado, HttpStatus.OK);
+            servActivo.eliminar(id);
+            return new ResponseEntity<>("OK", HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new HttpNoContentExecption("ACTIVO", id.toString());
         }
     }
 }
