@@ -279,6 +279,9 @@ public class ActivoController {
                         response = Activo.class),
                 @ApiResponse(
                         code = 204,
+                        message = "Sin información - Activo con serial ya existe."),
+                @ApiResponse(
+                        code = 404,
                         message = "Sin información - Activo no encontrado."),
                 @ApiResponse(
                         code = 400,
@@ -289,10 +292,26 @@ public class ActivoController {
                         message = "Error interno del servidor")
             }
     )
-    @PostMapping(value = "/editar", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public Activo editActivo(@RequestBody @Valid Activo activo) {
-
-        return servActivo.editar(activo);
+    @PostMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Activo> editActivo(@RequestBody @Valid Activo activo) {
+        Optional<Activo> activoId = servActivo.buscarActivoById(activo.getId());
+        if (activoId.isPresent()) {
+            Optional<Activo> activoSerial = servActivo.buscarActivosBySerial(activo.getSerial());
+            if (activoSerial.isPresent() && activoId.get().getId() == activoSerial.get().getId()
+                    && activoId.get().getSerial().toLowerCase().equals(activoSerial.get().getSerial().toLowerCase())) {
+                //Se edita el activo por que el ID existe y el Serial es del ID actualizar.
+                servActivo.editar(activo);
+                return new ResponseEntity<>(HttpStatus.OK);
+            } else if (!activoSerial.isPresent()) {
+                //Se edita el activo por que el ID exite y el Serial actualizar no existe.
+                servActivo.editar(activo);
+                return new ResponseEntity<>(HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     /**
