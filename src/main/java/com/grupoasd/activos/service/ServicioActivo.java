@@ -159,10 +159,10 @@ public class ServicioActivo {
      * @param activo Activo.
      * @return Activo
      */
-    public Activo editar(Activo activo) {
-        Activo respuesta = null;
+    public Optional<Activo> editar(Activo activo) {
+        Optional<Activo> respuesta = Optional.empty();
         try {
-            respuesta = repoActivo.save(activo);
+            respuesta = Optional.of(repoActivo.save(activo));
             return respuesta;
         } catch (Exception e) {
             log.info(e.getMessage());

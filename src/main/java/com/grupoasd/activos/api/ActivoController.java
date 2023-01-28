@@ -36,7 +36,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -218,8 +217,8 @@ public class ActivoController {
     @GetMapping(value = "/fecha",
             produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<List<Activo>> getActivosByFechaCompra(
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd")
-            @ApiParam(name = "compra", value = "Fecha de Compra.", example = "2023-01-26") Date compra) {
+            @ApiParam(name = "compra", value = "Fecha de Compra.", example = "2023-01-26")
+            @DateTimeFormat(pattern = "yyyy-MM-dd") Date compra) {
         List<Activo> resultado = servActivo.buscarActivosByFechaCompra(compra);
         return new ResponseEntity<>(resultado, HttpStatus.OK);
     }
@@ -300,12 +299,12 @@ public class ActivoController {
             if (activoSerial.isPresent() && activoId.get().getId() == activoSerial.get().getId()
                     && activoId.get().getSerial().toLowerCase().equals(activoSerial.get().getSerial().toLowerCase())) {
                 //Se edita el activo por que el ID existe y el Serial es del ID actualizar.
-                servActivo.editar(activo);
-                return new ResponseEntity<>(HttpStatus.OK);
+                Optional<Activo> respuesta = servActivo.editar(activo);
+                return new ResponseEntity<>(respuesta.get(), HttpStatus.OK);
             } else if (!activoSerial.isPresent()) {
                 //Se edita el activo por que el ID exite y el Serial actualizar no existe.
-                servActivo.editar(activo);
-                return new ResponseEntity<>(HttpStatus.OK);
+                Optional<Activo> respuesta = servActivo.editar(activo);
+                return new ResponseEntity<>(respuesta.get(), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
@@ -322,10 +321,47 @@ public class ActivoController {
      * @param serial Serial.
      * @return Activo
      */
-    @PostMapping(value = "/editar/serial/{id}/{serial}",
+    @ApiOperation(value = "Servicio que actualiza el serial de un registro de activo de la empresa.")
+    @ApiResponses(
+            value = {
+                @ApiResponse(
+                        code = 200,
+                        message = "Respuesta exitosa",
+                        response = Activo.class),
+                @ApiResponse(
+                        code = 204,
+                        message = "Sin información - Activo con serial ya existe."),
+                @ApiResponse(
+                        code = 404,
+                        message = "Sin información - Activo no encontrado."),
+                @ApiResponse(
+                        code = 400,
+                        message = "Bad Request",
+                        reference = "La solicitud realizada no cumple con las validaciones de datos implementada"),
+                @ApiResponse(
+                        code = 500,
+                        message = "Error interno del servidor")
+            }
+    )
+    @PostMapping(value = "/{id}/serial/{serial}",
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public Activo editSerialActivo(@PathVariable Integer id, @PathVariable String serial) {
-        return servActivo.editarSerialAcivoById(id, serial).get();
+    public ResponseEntity<Activo> editSerialActivo(
+            @PathVariable @ApiParam(name = "id", value = "Id del Activo.", example = "1") Integer id,
+            @PathVariable @ApiParam(name = "serial", value = "Serial del activo.", example = "E0001") String serial) {
+
+        Optional<Activo> activoId = servActivo.buscarActivoById(id);
+        if (activoId.isPresent()) {
+            Optional<Activo> activoSerial = servActivo.buscarActivosBySerial(serial);
+            if (!activoSerial.isPresent()) {
+                //Se edita el activo por que el ID exite y el Serial actualizar no existe.
+                Optional<Activo> resultado = Optional.of(servActivo.editarSerialAcivoById(id, serial).get());
+                return new ResponseEntity<>(resultado.get(), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     /**
@@ -336,11 +372,39 @@ public class ActivoController {
      * @param fechaBaja FechaBaja.
      * @return Activo
      */
-    @PostMapping(value = "/activo/editar/fecha_baja/{id}/{fecha_baja}",
+    @ApiOperation(value = "Servicio que actualiza la fecha de baja de un registro de activo de la empresa.")
+    @ApiResponses(
+            value = {
+                @ApiResponse(
+                        code = 200,
+                        message = "Respuesta exitosa",
+                        response = Activo.class),
+                @ApiResponse(
+                        code = 404,
+                        message = "Sin información - Activo no encontrado."),
+                @ApiResponse(
+                        code = 400,
+                        message = "Bad Request",
+                        reference = "La solicitud realizada no cumple con las validaciones de datos implementada"),
+                @ApiResponse(
+                        code = 500,
+                        message = "Error interno del servidor")
+            }
+    )
+    @PostMapping(value = "/{id}/fechabaja/{fechabaja}",
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public Activo editFechaBajaActivo(@PathVariable Integer id,
-            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date fechaBaja) {
-        return servActivo.editarFechaBajaAcivoById(id, fechaBaja).get();
+    public ResponseEntity<Activo> editFechaBajaActivo(
+            @PathVariable @ApiParam(name = "id", value = "Id del Activo.", example = "1") Integer id,
+            @PathVariable @ApiParam(name = "fechabaja", value = "Fecha de baja.")
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date fechaBaja) {
+
+        Optional<Activo> activoId = servActivo.buscarActivoById(id);
+        if (activoId.isPresent()) {
+            Optional<Activo> resultado = Optional.of(servActivo.editarFechaBajaAcivoById(id, fechaBaja).get());
+            return new ResponseEntity<>(resultado.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     /**
