@@ -316,7 +316,7 @@ public class ActivoController {
                 return new ResponseEntity<>(respuesta.get(), HttpStatus.OK);
             } else {
                 throw new HttpBadRequestExecption("Ya existe un serial:"
-                        + activo.getSerial() + ", para el activo a crear.");
+                        + activo.getSerial() + ", para el activo actualizar.");
             }
         } else {
             throw new HttpNoContentExecption("ACTIVO", activo.getId().toString());
@@ -364,7 +364,7 @@ public class ActivoController {
                 Optional<Activo> resultado = Optional.of(servActivo.editarSerialAcivoById(id, serial).get());
                 return new ResponseEntity<>(resultado.get(), HttpStatus.OK);
             } else {
-                throw new HttpBadRequestExecption("Ya existe un serial:" + serial + ", para el activo a crear.");
+                throw new HttpBadRequestExecption("Ya existe un serial:" + serial + ", para el activo actualizar.");
             }
         } else {
             throw new HttpNoContentExecption("ACTIVO", id.toString());
