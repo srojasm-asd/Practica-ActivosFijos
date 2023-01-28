@@ -1,5 +1,5 @@
 /*
-* Archivo: ServicioActivo.java
+* Archivo: ServiceActivoTest.java
 * Fecha: 27/01/2023
 * Todos los derechos de propiedad intelectual e industrial sobre esta
 * aplicacion son de propiedad exclusiva del SANTIAGO ROJAS MANIOS
@@ -13,9 +13,21 @@
  */
 package com.grupoasd.activos.service;
 
+import com.grupoasd.activos.api.ActivoController;
+import com.grupoasd.activos.entity.Activo;
+import java.util.ArrayList;
+import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 /**
  * Pruenas unitarias para el servicio de la clase Activos..
@@ -28,6 +40,21 @@ public class ServiceActivoTest {
     @BeforeEach
     public void init() {
 
+    }
+
+    @InjectMocks
+    private ActivoController activoApiController;
+
+    @Mock
+    private ServicioActivo activoServiceImpl;
+
+    @Test
+    @DisplayName("Listar activos.")
+    public void consultarActivos() {
+        List<Activo> resultado = new ArrayList();
+        when(activoServiceImpl.buscarTodosLosActivos()).thenReturn(resultado);
+        ResponseEntity<?> res = activoApiController.consultarActivos();
+        assertEquals(HttpStatus.OK, res.getStatusCode());
     }
 
 }

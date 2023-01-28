@@ -221,6 +221,7 @@
                                         <exclude>com.grupoasd.activos.api</exclude>
                                         <exclude>com.grupoasd.activos.config</exclude>
                                         <exclude>com.grupoasd.activos.entity</exclude>
+                                        <exclude>com.grupoasd.activos.exception</exclude>
                                         <exclude>com.grupoasd.activos.model</exclude>
                                         <exclude>com.grupoasd.activos.repository</exclude>
                                         <exclude>com.grupoasd.activos.security</exclude>
