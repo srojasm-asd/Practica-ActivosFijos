@@ -13,6 +13,7 @@
  */
 package com.grupoasd.activos.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
@@ -28,6 +29,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 import lombok.Data;
 
 /**
@@ -55,11 +57,13 @@ public class Activo implements Serializable {
     /**
      * Serial.
      */
+    @NotNull
     @Column(name = "serial")
     private String serial;
     /**
      * Nombre.
      */
+    @NotNull
     @Column(name = "nombre")
     private String nombre;
     /**
@@ -112,12 +116,16 @@ public class Activo implements Serializable {
     /**
      * Id Estado Activo.
      */
+    @NotNull
+    @JsonProperty("estado")
     @JoinColumn(name = "id_estado_activo", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private EstadoActivo idEstadoActivo;
     /**
      * Id Tipo Activo.
      */
+    @NotNull
+    @JsonProperty("tipo")
     @JoinColumn(name = "id_tipo_activo", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private TipoActivo idTipoActivo;

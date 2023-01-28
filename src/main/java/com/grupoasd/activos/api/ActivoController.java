@@ -93,7 +93,7 @@ public class ActivoController {
      * @param id Id.
      * @return Activo
      */
-    @ApiOperation(value = "Servicio que consulta una registro de activo de la empresa, por su ID.")
+    @ApiOperation(value = "Servicio que consulta un registro de activo de la empresa, por su ID.")
     @ApiResponses(
             value = {
                 @ApiResponse(
@@ -130,7 +130,7 @@ public class ActivoController {
      * @param id Id.
      * @return List-Activo
      */
-    @ApiOperation(value = "Servicio que consulta una registro de activo de la empresa, por su Tipo.")
+    @ApiOperation(value = "Servicio que consulta un registro de activo de la empresa, por su Tipo.")
     @ApiResponses(
             value = {
                 @ApiResponse(
@@ -150,9 +150,10 @@ public class ActivoController {
             }
     )
     @GetMapping(value = "/tipo/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public List<Activo> getActivosByTipo(
+    public ResponseEntity<List<Activo>> getActivosByTipo(
             @PathVariable @ApiParam(name = "id", value = "Id del tipo.", example = "1") Integer id) {
-        return servActivo.buscarActivosByTipo(id);
+        List<Activo> resultado = servActivo.buscarActivosByTipo(id);
+        return new ResponseEntity<>(resultado, HttpStatus.OK);
     }
 
     /**
@@ -162,7 +163,7 @@ public class ActivoController {
      * @param serial Serial.
      * @return List-Activo
      */
-    @ApiOperation(value = "Servicio que consulta una registro de activo de la empresa, por su Serial.")
+    @ApiOperation(value = "Servicio que consulta un registro de activo de la empresa, por su Serial.")
     @ApiResponses(
             value = {
                 @ApiResponse(
@@ -182,9 +183,10 @@ public class ActivoController {
             }
     )
     @GetMapping(value = "/serial/{serial}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public List<Activo> getActivosBySerial(
+    public ResponseEntity<Activo> getActivosBySerial(
             @PathVariable @ApiParam(name = "serial", value = "Serial.", example = "1") String serial) {
-        return servActivo.buscarActivosBySerial(serial);
+        Optional<Activo> resultado = servActivo.buscarActivosBySerial(serial);
+        return new ResponseEntity<>(resultado.get(), HttpStatus.OK);
     }
 
     /**
@@ -194,7 +196,7 @@ public class ActivoController {
      * @param compra FechaCompra
      * @return List-Activo
      */
-    @ApiOperation(value = "Servicio que consulta una registro de activo de la empresa, por su fecha de compra.")
+    @ApiOperation(value = "Servicio que consulta un registro de activo de la empresa, por su fecha de compra.")
     @ApiResponses(
             value = {
                 @ApiResponse(
@@ -215,10 +217,11 @@ public class ActivoController {
     )
     @GetMapping(value = "/fecha",
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public List<Activo> getActivosByFechaCompra(
+    public ResponseEntity<List<Activo>> getActivosByFechaCompra(
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd")
             @ApiParam(name = "compra", value = "Fecha de Compra.", example = "2023-01-26") Date compra) {
-        return servActivo.buscarActivosByFechaCompra(compra);
+        List<Activo> resultado = servActivo.buscarActivosByFechaCompra(compra);
+        return new ResponseEntity<>(resultado, HttpStatus.OK);
     }
 
     /**
@@ -227,9 +230,38 @@ public class ActivoController {
      * @param activo Activo.
      * @return Activo
      */
-    @PutMapping(value = "/crear", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public Activo createActivo(@RequestBody @Valid Activo activo) {
-        return servActivo.crear(activo);
+    @ApiOperation(value = "Servicio que crea un registro de activo de la empresa.")
+    @ApiResponses(
+            value = {
+                @ApiResponse(
+                        code = 201,
+                        message = "Activo creado correctamente.",
+                        response = Activo.class),
+                @ApiResponse(
+                        code = 204,
+                        message = "Sin información - Activo ya existe."),
+                @ApiResponse(
+                        code = 400,
+                        message = "Bad Request",
+                        reference = "La solicitud realizada no cumple con las validaciones de datos implementada"),
+                @ApiResponse(
+                        code = 500,
+                        message = "Error interno del servidor")
+            }
+    )
+    @PutMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Activo> createActivo(@RequestBody @Valid Activo activo) {
+        Optional<Activo> activoEnBase = servActivo.buscarActivosBySerial(activo.getSerial());
+        if (activoEnBase.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            Optional<Activo> respuesta = servActivo.crear(activo);
+            if (respuesta.isPresent()) {
+                return new ResponseEntity<>(respuesta.get(), HttpStatus.CREATED);
+            } else {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+        }
     }
 
     /**
@@ -238,8 +270,28 @@ public class ActivoController {
      * @param activo Activo.
      * @return Activo
      */
+    @ApiOperation(value = "Servicio que actualizar un registro de activo de la empresa.")
+    @ApiResponses(
+            value = {
+                @ApiResponse(
+                        code = 200,
+                        message = "Respuesta exitosa",
+                        response = Activo.class),
+                @ApiResponse(
+                        code = 204,
+                        message = "Sin información - Activo no encontrado."),
+                @ApiResponse(
+                        code = 400,
+                        message = "Bad Request",
+                        reference = "La solicitud realizada no cumple con las validaciones de datos implementada"),
+                @ApiResponse(
+                        code = 500,
+                        message = "Error interno del servidor")
+            }
+    )
     @PostMapping(value = "/editar", produces = {MediaType.APPLICATION_JSON_VALUE})
     public Activo editActivo(@RequestBody @Valid Activo activo) {
+
         return servActivo.editar(activo);
     }
 

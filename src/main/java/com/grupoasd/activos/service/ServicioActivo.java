@@ -107,10 +107,10 @@ public class ServicioActivo {
      * @param serial Serial.
      * @return Activo
      */
-    public List<Activo> buscarActivosBySerial(String serial) {
-        List<Activo> respuesta = null;
+    public Optional<Activo> buscarActivosBySerial(String serial) {
+        Optional<Activo> respuesta = Optional.empty();
         try {
-            respuesta = repoActivo.buscarBySerial(serial);
+            respuesta = Optional.of(repoActivo.buscarBySerial(serial).get(0));
             return respuesta;
         } catch (Exception e) {
             log.info(e.getMessage());
@@ -142,10 +142,10 @@ public class ServicioActivo {
      * @param activo Activo.
      * @return Activo
      */
-    public Activo crear(Activo activo) {
-        Activo respuesta = null;
+    public Optional<Activo> crear(Activo activo) {
+        Optional<Activo> respuesta = Optional.empty();
         try {
-            respuesta = repoActivo.save(activo);
+            respuesta = Optional.of(repoActivo.save(activo));
             return respuesta;
         } catch (Exception e) {
             log.info(e.getMessage());
