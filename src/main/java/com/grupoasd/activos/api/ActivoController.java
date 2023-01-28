@@ -413,8 +413,35 @@ public class ActivoController {
      * @param id Id.
      * @return true-false
      */
-    @DeleteMapping(value = "/eliminar/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public boolean deleteActivo(@PathVariable Integer id) {
-        return servActivo.eliminar(id);
+    @ApiOperation(value = "Servicio que elimina un registro de activo de la empresa.")
+    @ApiResponses(
+            value = {
+                @ApiResponse(
+                        code = 200,
+                        message = "Respuesta exitosa",
+                        response = Boolean.class),
+                @ApiResponse(
+                        code = 404,
+                        message = "Sin información - Activo no encontrado."),
+                @ApiResponse(
+                        code = 400,
+                        message = "Bad Request",
+                        reference = "La solicitud realizada no cumple con las validaciones de datos implementada"),
+                @ApiResponse(
+                        code = 500,
+                        message = "Error interno del servidor")
+            }
+    )
+    @DeleteMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Boolean> deleteActivo(
+            @PathVariable @ApiParam(name = "id", value = "Id del Activo.", example = "1") Integer id) {
+
+        Optional<Activo> activoId = servActivo.buscarActivoById(id);
+        if (activoId.isPresent()) {
+            Boolean resultado = servActivo.eliminar(id);
+            return new ResponseEntity<>(resultado, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }
