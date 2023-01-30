@@ -22,6 +22,7 @@ import com.grupoasd.activos.repository.AreaRepositorio;
 import com.grupoasd.activos.repository.PersonaRepositorio;
 import com.grupoasd.activos.repository.PropietarioActivoRepositorio;
 import java.util.Date;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,11 +73,11 @@ public class ServicioPropietarioActivo {
      * @param id Id.
      * @return PropietarioActivo
      */
-    public PropietarioActivo buscarPropietarioActivoById(Integer id) {
-        PropietarioActivo respuesta = null;
+    public Optional<PropietarioActivo> buscarPropietarioActivoById(Integer id) {
+        Optional<PropietarioActivo> respuesta = Optional.empty();
         try {
             log.info("id_propietario:" + id);
-            respuesta = repoPropietarioActivo.findById(id);
+            respuesta = Optional.of(repoPropietarioActivo.findById(id));
             return respuesta;
         } catch (Exception e) {
             log.info(e.getMessage());
@@ -113,8 +114,8 @@ public class ServicioPropietarioActivo {
      * @param idArea Id Area.
      * @return PropietarioActivo
      */
-    public PropietarioActivo crear(Integer idActivo, Integer idPersona, Integer idArea) {
-        PropietarioActivo respuesta = null;
+    public Optional<PropietarioActivo> crear(Integer idActivo, Integer idPersona, Integer idArea) {
+        Optional<PropietarioActivo> respuesta = Optional.empty();
         PropietarioActivo propietarioActividad = null;
         Activo activoAsignar = null;
         Persona personaPropietario = null;
@@ -146,7 +147,7 @@ public class ServicioPropietarioActivo {
                         log.info("El area exite!");
                         propietarioActividad.setIdArea(areaPropietario);
                     }
-                    respuesta = repoPropietarioActivo.save(propietarioActividad);
+                    respuesta = Optional.of(repoPropietarioActivo.save(propietarioActividad));
                 } else {
                     log.info("El activo ya tiene un propietario");
                 }

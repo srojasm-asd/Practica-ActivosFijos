@@ -15,6 +15,9 @@ package com.grupoasd.activos.service;
 
 import com.grupoasd.activos.entity.EstadoActivo;
 import com.grupoasd.activos.repository.EstadoActivoRepositorio;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,10 +45,26 @@ public class ServicioEstadoActivo {
      * @param id Id.
      * @return EstadoActivo.
      */
-    public EstadoActivo buscarEstadoActivoById(Integer id) {
-        EstadoActivo respuesta = null;
+    public Optional<EstadoActivo> buscarEstadoActivoById(Integer id) {
+        Optional<EstadoActivo> respuesta = Optional.empty();
         try {
-            respuesta = repoEstadoActivo.findById(id);
+            respuesta = Optional.of(repoEstadoActivo.findById(id));
+            return respuesta;
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            return respuesta;
+        }
+    }
+
+    /**
+     * Buscar todos los estados de activo.
+     *
+     * @return List-EstadoActivo.
+     */
+    public List<EstadoActivo> buscarTodosLosEstadosActivo() {
+        List<EstadoActivo> respuesta = new ArrayList<>();
+        try {
+            respuesta = repoEstadoActivo.findAll();
             return respuesta;
         } catch (Exception e) {
             log.info(e.getMessage());

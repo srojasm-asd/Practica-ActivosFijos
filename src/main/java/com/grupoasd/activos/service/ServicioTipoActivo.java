@@ -15,6 +15,9 @@ package com.grupoasd.activos.service;
 
 import com.grupoasd.activos.entity.TipoActivo;
 import com.grupoasd.activos.repository.TipoActivoRepositorio;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,10 +45,26 @@ public class ServicioTipoActivo {
      * @param id ID.
      * @return TipoActivo.
      */
-    public TipoActivo buscarTipoActivoById(Integer id) {
-        TipoActivo respuesta = null;
+    public Optional<TipoActivo> buscarTipoActivoById(Integer id) {
+        Optional<TipoActivo> respuesta = Optional.empty();
         try {
-            respuesta = repoTipoActivo.findById(id);
+            respuesta = Optional.of(repoTipoActivo.findById(id));
+            return respuesta;
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            return respuesta;
+        }
+    }
+
+    /**
+     * Buscar todos los tipos de activos.
+     *
+     * @return List-TipoActivo.
+     */
+    public List<TipoActivo> buscarTipoActivos() {
+        List<TipoActivo> respuesta = new ArrayList<>();
+        try {
+            respuesta = repoTipoActivo.findAll();
             return respuesta;
         } catch (Exception e) {
             log.info(e.getMessage());

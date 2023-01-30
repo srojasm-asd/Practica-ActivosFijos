@@ -15,8 +15,17 @@ package com.grupoasd.activos.api;
 
 import com.grupoasd.activos.entity.Ciudad;
 import com.grupoasd.activos.service.ServicioCiudad;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,6 +38,9 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Santiago Rojas Manios
  *
  */
+@Api(value = "Ciudades", tags = {"Ciudades"},
+        description = "Api para consultar información de las ciudades.")
+@RequestMapping("${app.context-api}/ciudades")
 @RestController
 public class CiudadController {
 
@@ -39,15 +51,67 @@ public class CiudadController {
     private ServicioCiudad servCiudad;
 
     /**
-     * obtener la ciudad.
+     * Servicio rest que consulta en la base de datos todos los registros de las
+     * Ciudades, retornando una lista.
+     *
+     * @return List-Ciudad
+     */
+    @ApiOperation(value = "Servicio que lista todas las Ciudades.")
+    @ApiResponses(
+            value = {
+                @ApiResponse(
+                        code = 200,
+                        message = "Respuesta exitosa del componente",
+                        response = Ciudad.class),
+                @ApiResponse(
+                        code = 400,
+                        message = "Bad Request",
+                        reference = "La solicitud realizada no cumple con las validaciones de datos implementada"),
+                @ApiResponse(
+                        code = 500,
+                        message = "Error interno del servidor")
+            }
+    )
+    @GetMapping(value = "/", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<List<Ciudad>> consultarCiudades() {
+        List<Ciudad> resultado = servCiudad.buscarTodasLasCiudades();
+        return new ResponseEntity<>(resultado, HttpStatus.OK);
+    }
+
+    /**
+     * Obtener la ciudad.
      *
      * @param id Id.
      * @return Ciudad.
      */
-    @RequestMapping(value = "/ciudad/{id}", method = RequestMethod.GET,
+    @ApiOperation(value = "Servicio que consulta una ciudad, por su ID.")
+    @ApiResponses(
+            value = {
+                @ApiResponse(
+                        code = 200,
+                        message = "Respuesta exitosa",
+                        response = Ciudad.class),
+                @ApiResponse(
+                        code = 204,
+                        message = "Sin información - Ciudad no encontrada"),
+                @ApiResponse(
+                        code = 400,
+                        message = "Bad Request",
+                        reference = "La solicitud realizada no cumple con las validaciones de datos implementada"),
+                @ApiResponse(
+                        code = 500,
+                        message = "Error interno del servidor")
+            }
+    )
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET,
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public Ciudad getCiudad(@PathVariable Integer id) {
-        return servCiudad.buscarCiudadById(id);
+    public ResponseEntity<Ciudad> consultarCiudad(@PathVariable Integer id) {
+        Optional<Ciudad> resultado = servCiudad.buscarCiudadById(id);
+        if (resultado.isPresent()) {
+            return new ResponseEntity<>(resultado.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
     }
 
 }

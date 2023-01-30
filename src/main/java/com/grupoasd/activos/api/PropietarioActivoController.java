@@ -15,12 +15,20 @@ package com.grupoasd.activos.api;
 
 import com.grupoasd.activos.entity.PropietarioActivo;
 import com.grupoasd.activos.service.ServicioPropietarioActivo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -32,6 +40,9 @@ import org.springframework.web.bind.annotation.RestController;
  *
  */
 @Slf4j
+@Api(value = "Propietario Activos", tags = {"Propietario Activos"},
+        description = "Api para consultar información de los propietarios de los activos de la empresa.")
+@RequestMapping("${app.context-api}/propietarios-activos")
 @RestController
 public class PropietarioActivoController {
 
@@ -49,24 +60,68 @@ public class PropietarioActivoController {
      * @param id Id.
      * @return PropietarioActivo
      */
-    @GetMapping(value = "/propietario/id/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public PropietarioActivo getPropietarioActivo(@PathVariable Integer id) {
+    @ApiOperation(value = "Servicio que consulta el propietario de un activo por el Id.")
+    @ApiResponses(
+            value = {
+                @ApiResponse(
+                        code = 200,
+                        message = "Respuesta exitosa del componente",
+                        response = PropietarioActivo.class),
+                @ApiResponse(
+                        code = 400,
+                        message = "Bad Request",
+                        reference = "La solicitud realizada no cumple con las validaciones de datos implementada"),
+                @ApiResponse(
+                        code = 500,
+                        message = "Error interno del servidor")
+            }
+    )
+    @GetMapping(value = "/id/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<PropietarioActivo> getPropietarioActivo(@PathVariable Integer id) {
         log.info("id_propietario:" + id);
-        return servPropietarioActivo.buscarPropietarioActivoById(id);
+        Optional<PropietarioActivo> respuesta = servPropietarioActivo.buscarPropietarioActivoById(id);
+        if (respuesta.isPresent()) {
+            return new ResponseEntity<>(respuesta.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
     }
 
     /**
-     * Servicio rest que permite crear un nuevo Activo en la base de datos.
+     * Servicio rest que permite crear un nuevo Propietario Activo en la base de
+     * datos.
      *
      * @param idActivo Id Activo.
      * @param idPersona Id Persona.
      * @param idArea Id Area.
      * @return PropietarioActivo
      */
-    @PutMapping(value = "/activo/propietario/asignar/{idActivo}/{idPersona}/{idArea}",
+    @ApiOperation(value = "Servicio que crear un nuevo Propietario de un  Activo.")
+    @ApiResponses(
+            value = {
+                @ApiResponse(
+                        code = 200,
+                        message = "Respuesta exitosa del componente",
+                        response = PropietarioActivo.class),
+                @ApiResponse(
+                        code = 400,
+                        message = "Bad Request",
+                        reference = "La solicitud realizada no cumple con las validaciones de datos implementada"),
+                @ApiResponse(
+                        code = 500,
+                        message = "Error interno del servidor")
+            }
+    )
+    @PutMapping(value = "/{idActivo}/{idPersona}/{idArea}",
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public PropietarioActivo createPropietarioActivo(@PathVariable Integer idActivo,
+    public ResponseEntity<PropietarioActivo> createPropietarioActivo(@PathVariable Integer idActivo,
             @PathVariable Integer idPersona, @PathVariable Integer idArea) {
-        return servPropietarioActivo.crear(idActivo, idPersona, idArea);
+
+        Optional<PropietarioActivo> respuesta = servPropietarioActivo.crear(idActivo, idPersona, idArea);
+        if (respuesta.isPresent()) {
+            return new ResponseEntity<>(respuesta.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
     }
 }

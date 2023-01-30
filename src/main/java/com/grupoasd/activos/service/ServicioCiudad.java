@@ -15,6 +15,9 @@ package com.grupoasd.activos.service;
 
 import com.grupoasd.activos.entity.Ciudad;
 import com.grupoasd.activos.repository.CiudadRepositorio;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,10 +45,26 @@ public class ServicioCiudad {
      * @param id Id.
      * @return Ciudad.
      */
-    public Ciudad buscarCiudadById(Integer id) {
-        Ciudad respuesta = null;
+    public Optional<Ciudad> buscarCiudadById(Integer id) {
+        Optional<Ciudad> respuesta = Optional.empty();
         try {
-            respuesta = repoCiudad.findById(id);
+            respuesta = Optional.of(repoCiudad.findById(id));
+            return respuesta;
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            return respuesta;
+        }
+    }
+
+    /**
+     * Lista todas las ciudades.
+     *
+     * @return List-Ciudad.
+     */
+    public List<Ciudad> buscarTodasLasCiudades() {
+        List<Ciudad> respuesta = new ArrayList<>();
+        try {
+            respuesta = repoCiudad.findAll();
             return respuesta;
         } catch (Exception e) {
             log.info(e.getMessage());
