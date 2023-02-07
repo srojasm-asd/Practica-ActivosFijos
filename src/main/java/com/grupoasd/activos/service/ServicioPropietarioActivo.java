@@ -17,6 +17,7 @@ import com.grupoasd.activos.entity.Activo;
 import com.grupoasd.activos.entity.Area;
 import com.grupoasd.activos.entity.Persona;
 import com.grupoasd.activos.entity.PropietarioActivo;
+import com.grupoasd.activos.model.NuevoPropietario;
 import com.grupoasd.activos.repository.ActivoRepositorio;
 import com.grupoasd.activos.repository.AreaRepositorio;
 import com.grupoasd.activos.repository.PersonaRepositorio;
@@ -109,43 +110,43 @@ public class ServicioPropietarioActivo {
      * Método que permite crear una relación de un activo con su propietario en
      * la base de datos.
      *
-     * @param idActivo Id Activo.
-     * @param idPersona Id Persona.
-     * @param idArea Id Area.
+     * @param nuevoPropietario Nuevo propietario.
      * @return PropietarioActivo
      */
-    public Optional<PropietarioActivo> crear(Integer idActivo, Integer idPersona, Integer idArea) {
+    public Optional<PropietarioActivo> crear(NuevoPropietario nuevoPropietario) {
         Optional<PropietarioActivo> respuesta = Optional.empty();
         PropietarioActivo propietarioActividad = null;
-        Activo activoAsignar = null;
-        Persona personaPropietario = null;
-        Area areaPropietario = null;
+        Optional<Activo> activoAsignar = Optional.empty();
+        Optional<Persona> personaPropietario = Optional.empty();
+        Optional<Area> areaPropietario = Optional.empty();
 
         //logger.info("act:"+idActivo+" per:"+idPersona+" are:"+idArea);
         try {
-            activoAsignar = repoActivo.findById(idActivo).get();
+            activoAsignar = Optional.of(repoActivo.findById(nuevoPropietario.getIdActivo()).get());
 
-            if (activoAsignar != null) {
+            if (activoAsignar.isPresent()) {
 
-                propietarioActividad = repoPropietarioActivo.findByIdActivo(activoAsignar);
+                propietarioActividad = repoPropietarioActivo.findByIdActivo(activoAsignar.get());
                 if (propietarioActividad == null) {
                     log.info("El activo exite!");
                     propietarioActividad = new PropietarioActivo();
-                    propietarioActividad.setIdActivo(activoAsignar);
+                    propietarioActividad.setIdActivo(activoAsignar.get());
                     propietarioActividad.setFechaAsignacion(new Date());
 
-                    if (idPersona != null || idArea != null) {
-                        personaPropietario = repoPersona.findById(idPersona).get();
-                        areaPropietario = repoArea.findById(idArea).get();
+                    if (nuevoPropietario.getIdPersona() != null) {
+                        personaPropietario = Optional.of(repoPersona.findById(nuevoPropietario.getIdPersona()).get());
+                    }
+                    if (nuevoPropietario.getIdArea() != null) {
+                        areaPropietario = Optional.of(repoArea.findById(nuevoPropietario.getIdArea()).get());
                     }
 
-                    if (personaPropietario != null) {
+                    if (!personaPropietario.isEmpty()) {
                         log.info("La persona exite!");
-                        propietarioActividad.setIdPersona(personaPropietario);
+                        propietarioActividad.setIdPersona(personaPropietario.get());
                     }
-                    if (areaPropietario != null) {
+                    if (!areaPropietario.isEmpty()) {
                         log.info("El area exite!");
-                        propietarioActividad.setIdArea(areaPropietario);
+                        propietarioActividad.setIdArea(areaPropietario.get());
                     }
                     respuesta = Optional.of(repoPropietarioActivo.save(propietarioActividad));
                 } else {
