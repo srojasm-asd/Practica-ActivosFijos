@@ -1,0 +1,198 @@
+
+-- ///////////////////////////////////////////////// CIUDAD /////////////////////////////////////////////////
+-- Table: public."ciudad"
+-- DROP TABLE public."ciudad";
+CREATE TABLE public."ciudad"
+(
+  id numeric NOT NULL, -- Llave primaria de la tabla Ciudad
+  codigo character varying, -- Código de la ciudad
+  nombre character varying, -- Nombre de la ciudad
+  CONSTRAINT pk_id_ciudad PRIMARY KEY (id)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE public."ciudad"
+  OWNER TO postgres;
+COMMENT ON TABLE public."ciudad"
+  IS 'Tabla que registra todas las ciudades de Colombia.';
+COMMENT ON COLUMN public."ciudad".id IS 'Llave primaria de la tabla Ciudad';
+COMMENT ON COLUMN public."ciudad".codigo IS 'Código de la ciudad';
+COMMENT ON COLUMN public."ciudad".nombre IS 'Nombre de la ciudad';
+
+
+-- ///////////////////////////////////////////////// ÁREA /////////////////////////////////////////////////
+
+-- Table: public."area"
+-- DROP TABLE public."area";
+CREATE TABLE public."area"
+(
+  id numeric NOT NULL, -- Llave primaria de la tabla
+  nombre character varying, -- Nombre del área
+  id_ciudad numeric, -- Llave foranea a la tabla Ciudad
+  CONSTRAINT pk_id_area PRIMARY KEY (id),
+  CONSTRAINT fk_id_ciudad FOREIGN KEY (id_ciudad)
+      REFERENCES public."ciudad" (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE public."area"
+  OWNER TO postgres;
+COMMENT ON TABLE public."area"
+  IS 'Tabla que registra todas las áreas de la empresas Grupo ASD';
+COMMENT ON COLUMN public."area".id IS 'Llave primaria de la tabla';
+COMMENT ON COLUMN public."area".nombre IS 'Nombre del área';
+COMMENT ON COLUMN public."area".id_ciudad IS 'Llave foranea a la tabla Ciudad';
+
+-- ///////////////////////////////////////////////// PERSONA /////////////////////////////////////////////////
+-- Table: public."persona"
+-- DROP TABLE public."persona";
+CREATE TABLE public."persona"
+(
+  id numeric NOT NULL, -- Llave primaria de la tabla.
+  nombre character varying, -- nombre completo de la persona.
+  cargo character varying, -- Cargo que desempeña la persona en la empresa
+  CONSTRAINT pk_id_persona PRIMARY KEY (id)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE public."persona"
+  OWNER TO postgres;
+COMMENT ON TABLE public."persona"
+  IS 'Tabla que registra las personas que presentan una relación con la empresa Grupo ASD';
+COMMENT ON COLUMN public."persona".id IS 'Llave primaria de la tabla.';
+COMMENT ON COLUMN public."persona".nombre IS 'nombre completo de la persona.';
+COMMENT ON COLUMN public."persona".cargo IS 'Cargo que desempeña la persona en la empresa';
+
+-- ///////////////////////////////////////////////// TIPO ACTIVO /////////////////////////////////////////////////
+-- Table: public."tipo_activo"
+-- DROP TABLE public."tipo_activo";
+CREATE TABLE public."tipo_activo"
+(
+  id numeric NOT NULL, -- Llave primaria de la tabla
+  nombre character varying, -- Describe el tipo de activo
+  CONSTRAINT pk_id_tipo_activo PRIMARY KEY (id)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE public."tipo_activo"
+  OWNER TO postgres;
+COMMENT ON TABLE public."tipo_activo"
+  IS 'Tabla que registra el tipo de activo al que puede pertenecer un activo fijo.';
+COMMENT ON COLUMN public."tipo_activo".id IS 'Llave primaria de la tabla';
+COMMENT ON COLUMN public."tipo_activo".nombre IS 'Describe el tipo de activo';
+
+
+
+﻿-- ///////////////////////////////////////////////// ESTADO ACTIVO /////////////////////////////////////////////////
+-- Table: public."estado_activo"
+-- DROP TABLE public."estado_activo";
+CREATE TABLE public."estado_activo"
+(
+  id numeric NOT NULL, -- Llave primaria de la tabla
+  nombre character varying, -- Describe el nombre del estado que puede presentar un activo.
+  CONSTRAINT pk_id_estado_activo PRIMARY KEY (id)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE public."estado_activo"
+  OWNER TO postgres;
+COMMENT ON TABLE public."estado_activo"
+  IS 'Tabla que registra los estados que puede presentar un activo.';
+COMMENT ON COLUMN public."estado_activo".id IS 'Llave primaria de la tabla';
+COMMENT ON COLUMN public."estado_activo".nombre IS 'Describe el nombre del estado que puede presentar un activo.';
+
+
+-- ///////////////////////////////////////////////// ACTIVO /////////////////////////////////////////////////
+-- Table: public."activo"
+-- DROP TABLE public."activo";
+CREATE TABLE public."activo"
+(
+  id numeric NOT NULL, -- Llave primaria de la tabla (Número interno de inventario)
+  id_tipo_activo numeric NOT NULL, -- llave foranea de la tabla Tipo_Activo
+  id_estado_activo numeric NOT NULL, -- Llave foranea de la tabla Estado_Activo.
+  serial character varying NOT NULL, -- Describe el serial o numero de identificación de un activo.
+  nombre character varying NOT NULL, -- Nombre corto del activo
+  descripcion character varying, -- Descricpción completa del activo.
+  valor_compra numeric, -- Atributo que registra el valor de la compra inicial de un activo.
+  fecha_compra timestamp without time zone, -- Atributo que describe la fecha en que se compro el activo.
+  fecha_baja timestamp without time zone, -- Atributo que describe la fecha en que se da de baja un activo.
+  peso integer, -- Atributo que describe el peso de un activo.
+  color character varying, -- Atributo que describe el color predominante de un activo.
+  alto integer, -- Atributo que describe la propiedad de altura de un activo.
+  ancho integer, -- Atributo que describe la propiedad de ancho de un activo.
+  largo integer, -- Atributo que describe la propiedad de profundidad de un activo.
+  numero_interno numeric,
+  CONSTRAINT pk_id_activo PRIMARY KEY (id),
+  CONSTRAINT activo_un UNIQUE (serial),
+  CONSTRAINT fk_id_estado_activo FOREIGN KEY (id_estado_activo)
+      REFERENCES public."estado_activo" (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk_id_tipo_activo FOREIGN KEY (id_tipo_activo)
+      REFERENCES public."tipo_activo" (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE public."activo"
+  OWNER TO postgres;
+COMMENT ON TABLE public."activo"
+  IS 'Tabla que registra todos los activos de la Empresa.';
+COMMENT ON COLUMN public."activo".id IS 'Llave primaria de la tabla (Número interno de inventario)';
+COMMENT ON COLUMN public."activo".id_tipo_activo IS 'llave foranea de la tabla Tipo_Activo';
+COMMENT ON COLUMN public."activo".id_estado_activo IS 'Llave foranea de la tabla Estado_Activo.';
+COMMENT ON COLUMN public."activo".serial IS 'Describe el serial o numero de identificación de un activo.';
+COMMENT ON COLUMN public."activo".nombre IS 'Nombre corto del activo';
+COMMENT ON COLUMN public."activo".descripcion IS 'Descricpción completa del activo.';
+COMMENT ON COLUMN public."activo".valor_compra IS 'Atributo que registra el valor de la compra inicial de un activo.';
+COMMENT ON COLUMN public."activo".fecha_compra IS 'Atributo que describe la fecha en que se compro el activo.';
+COMMENT ON COLUMN public."activo".fecha_baja IS 'Atributo que describe la fecha en que se da de baja un activo.';
+COMMENT ON COLUMN public."activo".peso IS 'Atributo que describe el peso de un activo.';
+COMMENT ON COLUMN public."activo".color IS 'Atributo que describe el color predominante de un activo.';
+COMMENT ON COLUMN public."activo".alto IS 'Atributo que describe la propiedad de altura de un activo.';
+COMMENT ON COLUMN public."activo".ancho IS 'Atributo que describe la propiedad de ancho de un activo.';
+COMMENT ON COLUMN public."activo".largo IS 'Atributo que describe la propiedad de profundidad de un activo.';
+COMMENT ON COLUMN public."activo".largo IS 'Atributo que contiene el numero interno del inventario.';
+
+-- ///////////////////////////////////////////////// PROPIETARIO ACTIVO /////////////////////////////////////////////////
+-- Table: public."propietario_activo"
+-- DROP TABLE public."propietario_activo";
+CREATE TABLE public."propietario_activo"
+(
+  id numeric NOT NULL, -- Llave primaria de la tabla
+  id_activo numeric NOT NULL, -- Llave foranea de la tabla Activo
+  id_area numeric, -- Llave foranea a la tabla Area
+  id_persona numeric, -- Llave foranea a la tabla Persona
+  fecha_asignacion timestamp without time zone, -- Atributo que registra la fecha de asginación de un activo a un propietario.
+  fecha_retiro timestamp without time zone, -- Atributo que registra la fecha de retiro de un activo a un propietario.
+  CONSTRAINT pk_id_propietario_activo PRIMARY KEY (id),
+  CONSTRAINT uk_propietario_activo_un UNIQUE (id_activo),
+  CONSTRAINT fk_id_activo FOREIGN KEY (id_activo)
+      REFERENCES public."activo" (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk_id_area FOREIGN KEY (id_area)
+      REFERENCES public."area" (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk_id_persona FOREIGN KEY (id_persona)
+      REFERENCES public."persona" (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE public."propietario_activo"
+  OWNER TO postgres;
+COMMENT ON TABLE public."propietario_activo"
+  IS 'Tabla que registra la relación entre la tabla Activo, Persona y Area para indentificar el propietario o asignación de un actrivo.';
+COMMENT ON COLUMN public."propietario_activo".id IS 'Llave primaria de la tabla';
+COMMENT ON COLUMN public."propietario_activo".id_activo IS 'Llave foranea de la tabla Activo';
+COMMENT ON COLUMN public."propietario_activo".id_area IS 'Llave foranea a la tabla Area';
+COMMENT ON COLUMN public."propietario_activo".id_persona IS 'Llave foranea a la tabla Persona';
+COMMENT ON COLUMN public."propietario_activo".fecha_asignacion IS 'Atributo que registra la fecha de asginación de un activo a un propietario.';
+COMMENT ON COLUMN public."propietario_activo".fecha_retiro IS 'Atributo que registra la fecha de retiro de un activo a un propietario.';

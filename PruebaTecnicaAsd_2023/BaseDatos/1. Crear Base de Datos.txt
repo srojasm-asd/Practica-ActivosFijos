@@ -1,0 +1,14 @@
+-- ///////////////////////////////////////////////// BASE-DATOS /////////////////////////////////////////////////
+-- Database: "asd_activos"
+-- DROP DATABASE "asd_activos";
+CREATE DATABASE "asd_activos"
+  WITH OWNER = postgres
+       ENCODING = 'UTF8'
+       TABLESPACE = pg_default
+       LC_COLLATE = 'en_US.utf8'
+       LC_CTYPE = 'en_US.utf8'
+       CONNECTION LIMIT = -1;
+COMMENT ON DATABASE "asd-activos"
+  IS 'Base de datos para soportar el API Activos de la empresa Grupo ASD';
+
+ 

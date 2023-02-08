@@ -1,0 +1,289 @@
+{
+	"info": {
+		"_postman_id": "7899ce3d-a113-4182-ad57-efc82c3b8e09",
+		"name": "ActivosASD",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5836700"
+	},
+	"item": [
+		{
+			"name": "Consultar-Areas",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9090/act/v1/areas/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"act",
+						"v1",
+						"areas",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Consultar-Area",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9090/act/v1/areas/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"act",
+						"v1",
+						"areas",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Consultar-Activos",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9090/act/v1/activos/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"act",
+						"v1",
+						"activos",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Consultar-Activo",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9090/act/v1/activos/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"act",
+						"v1",
+						"activos",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Consultar-Activo por  Tipo",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9090/act/v1/activos/tipo/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"act",
+						"v1",
+						"activos",
+						"tipo",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Consultar-Activo por  Serial",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9090/act/v1/activos/serial/E0001",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"act",
+						"v1",
+						"activos",
+						"serial",
+						"E0001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Consultar-Activo por  Fecha de compra",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9090/act/v1/activos/fecha?compra=2023-01-26",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"act",
+						"v1",
+						"activos",
+						"fecha"
+					],
+					"query": [
+						{
+							"key": "compra",
+							"value": "2023-01-26"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Crear Activo",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"alto\": 0,\n  \"ancho\": 0,\n  \"color\": \"\",\n  \"descripcion\": \"\",\n  \"estado\": {\n    \"id\": 1\n  },\n  \"fechaBaja\": \"2023-01-28T02:59:57.679Z\",\n  \"fechaCompra\": \"\",\n  \"largo\": 0,\n  \"nombre\": \"Silla Generica\",\n  \"peso\": 0,\n  \"serial\": \"\",\n  \"tipo\": {\n    \"id\": 1\n  },\n  \"valorCompra\": 50\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9090/act/v1/activos/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"act",
+						"v1",
+						"activos",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Editar Activo",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\":9,\n  \"alto\": 0,\n  \"ancho\": 0,\n  \"color\": \"\",\n  \"descripcion\": \"\",\n  \"estado\": {\n    \"id\": 1\n  },\n  \"fechaBaja\": ,\n  \"fechaCompra\": \"2023-01-28T02:59:57.679Z\",\n  \"largo\": 0,\n  \"nombre\": \"Silla Generica\",\n  \"peso\": 0,\n  \"serial\": \"E0002\",\n  \"tipo\": {\n    \"id\": 1\n  },\n  \"valorCompra\": 100\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9090/act/v1/activos/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"act",
+						"v1",
+						"activos",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Editar Serial Activo",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\":9,\n  \"alto\": 0,\n  \"ancho\": 0,\n  \"color\": \"\",\n  \"descripcion\": \"\",\n  \"estado\": {\n    \"id\": 1\n  },\n  \"fechaBaja\": ,\n  \"fechaCompra\": \"2023-01-28T02:59:57.679Z\",\n  \"largo\": 0,\n  \"nombre\": \"Silla Presidencial\",\n  \"peso\": 0,\n  \"serial\": \"E0002\",\n  \"tipo\": {\n    \"id\": 1\n  },\n  \"valorCompra\": 100\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9090/act/v1/activos/9/serial/E0003",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"act",
+						"v1",
+						"activos",
+						"9",
+						"serial",
+						"E0003"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Borrar Activo",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9090/act/v1/activos/9",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"act",
+						"v1",
+						"activos",
+						"9"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

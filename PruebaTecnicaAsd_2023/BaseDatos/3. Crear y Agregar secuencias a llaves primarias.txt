@@ -1,0 +1,117 @@
+--Script SQL que permite crear y agregar las secuencias a las tablas.
+
+--////////////////////////////////////////////// TIPO ACTIVO  //////////////////////////////////////////////
+-- Sequence: public.sq_id_tipo_activo
+-- DROP SEQUENCE public.sq_id_tipo_activo;
+CREATE SEQUENCE public.sq_id_tipo_activo
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+ALTER TABLE public.sq_id_tipo_activo
+  OWNER TO postgres;
+COMMENT ON SEQUENCE public.sq_id_tipo_activo
+  IS 'Objeto de tipo secuencia autonumerica para la llave principal de la tabla tipo_activo';
+
+ALTER TABLE public."tipo_activo" ALTER COLUMN id SET DEFAULT nextval('sq_id_tipo_activo');
+
+--////////////////////////////////////////////// ESTADO ACTIVO  //////////////////////////////////////////////
+-- Sequence: public.sq_id_estado_activo
+-- DROP SEQUENCE public.sq_id_estado_activo;
+CREATE SEQUENCE public.sq_id_estado_activo
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+ALTER TABLE public.sq_id_estado_activo
+  OWNER TO postgres;
+COMMENT ON SEQUENCE public.sq_id_estado_activo
+  IS 'Objeto de tipo secuencia autonumerica para la llave principal de la tabla estado_activo';
+
+ALTER TABLE public."estado_activo" ALTER COLUMN id SET DEFAULT nextval('sq_id_estado_activo');
+
+--////////////////////////////////////////////// CIUDAD  //////////////////////////////////////////////
+-- Sequence: public.sq_ciudad
+-- DROP SEQUENCE public.sq_ciudad;
+CREATE SEQUENCE public.sq_ciudad
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+ALTER TABLE public.sq_ciudad
+  OWNER TO postgres;
+COMMENT ON SEQUENCE public.sq_ciudad
+  IS 'Objeto de tipo secuencia autonumerica para la llave principal de la tabla ciudad';
+
+ALTER TABLE public."ciudad" ALTER COLUMN id SET DEFAULT nextval('sq_ciudad');
+
+--////////////////////////////////////////////// AREA  //////////////////////////////////////////////
+-- Sequence: public.sq_area
+-- DROP SEQUENCE public.sq_area;
+CREATE SEQUENCE public.sq_area
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+ALTER TABLE public.sq_area
+  OWNER TO postgres;
+COMMENT ON SEQUENCE public.sq_area
+  IS 'Objeto de tipo secuencia autonumerica para la llave principal de la tabla area';
+
+ALTER TABLE public."area" ALTER COLUMN id SET DEFAULT nextval('sq_area');
+
+--////////////////////////////////////////////// PERSONA  //////////////////////////////////////////////
+-- Sequence: public.sq_persona
+-- DROP SEQUENCE public.sq_persona;
+CREATE SEQUENCE public.sq_persona
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+ALTER TABLE public.sq_persona
+  OWNER TO postgres;
+COMMENT ON SEQUENCE public.sq_persona
+  IS 'Objeto de tipo secuencia autonumerica para la llave principal de la tabla persona';
+
+ALTER TABLE public."persona" ALTER COLUMN id SET DEFAULT nextval('sq_persona');
+
+--////////////////////////////////////////////// ACTIVO  //////////////////////////////////////////////
+-- Sequence: public.sq_activo
+-- DROP SEQUENCE public.sq_activo;
+CREATE SEQUENCE public.sq_activo
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+ALTER TABLE public.sq_activo
+  OWNER TO postgres;
+COMMENT ON SEQUENCE public.sq_activo
+  IS 'Objeto de tipo secuencia autonumerica para la llave principal de la tabla activo';
+
+
+ALTER TABLE public."activo" ALTER COLUMN id SET DEFAULT nextval('sq_activo');
+
+
+--////////////////////////////////////////////// PROPIETARIO ACTIVO  //////////////////////////////////////////////
+-- Sequence: public.sq_propietario_activo
+-- DROP SEQUENCE public.sq_propietario_activo;
+CREATE SEQUENCE public.sq_propietario_activo
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+ALTER TABLE public.sq_propietario_activo
+  OWNER TO postgres;
+COMMENT ON SEQUENCE public.sq_propietario_activo
+  IS 'Objeto de tipo secuencia autonumerica para la llave principal de la tabla propietario_activo';
+
+
+ALTER TABLE public."propietario_activo" ALTER COLUMN id SET DEFAULT nextval('sq_propietario_activo');
+
