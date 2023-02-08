@@ -13,7 +13,7 @@ Los servicios son desarrollados utilizando Spring Boot + Maven. Las pruebas unit
 
 Para el despliegue de la aplicación sea por docker o por otro medio, tener en cuenta la configuración de las variables de ambiente:
 
-LOGGING_LEVEL_ORG_APACHE_KAFKA= Dirección IP del servicio de base de datos.
+LOCALHOST_IP= Dirección IP del servicio de base de datos.
 
 ### Configuraciones de ambientes y entorno de desarrollo ###
 
